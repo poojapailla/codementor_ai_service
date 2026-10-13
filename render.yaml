@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: codementor-ai-service
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      # Pin the interpreter Render uses (must match local Python used for tests).
+      - key: PYTHON_VERSION
+        value: "3.11.4"
+      # Secret: leave blank in the blueprint and set the real value in the
+      # Render dashboard (never commit it). sync: false = prompt on first deploy.
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-120b
+      - key: GROQ_TIMEOUT
+        value: "300"
