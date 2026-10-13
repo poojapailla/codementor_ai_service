@@ -1,15 +1,13 @@
 services:
   - type: web
     name: codementor-ai-service
-    runtime: python
+    runtime: docker
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     healthCheckPath: /health
     envVars:
-      # Pin the interpreter Render uses (must match local Python used for tests).
-      - key: PYTHON_VERSION
-        value: "3.11.4"
+      # Python version is pinned by the Docker base image (python:3.11-slim).
       # Secret: leave blank in the blueprint and set the real value in the
       # Render dashboard (never commit it). sync: false = prompt on first deploy.
       - key: GROQ_API_KEY
