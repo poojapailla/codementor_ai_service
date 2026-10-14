@@ -1,0 +1,19 @@
+name: Keep services warm
+
+# Render's free tier spins a service down after ~15 minutes of inactivity.
+# Pinging every 10 minutes keeps both the AI service and the backend warm so
+# real users never hit a ~60s cold start on their first request.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping AI service health endpoint
+        run: curl -fsS --max-time 120 https://codementor-ai-service-o37b.onrender.com/health || true
+
+      - name: Ping backend
+        run: curl -fsS --max-time 120 https://codementor-backend-cpek.onrender.com/ || true
